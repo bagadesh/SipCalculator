@@ -21,12 +21,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             SipCalculatorTheme {
-                if (ENABLE_V2) {
-                    MainUI()
-                } else {
-                    SplashScreenController.homeUIDrawn()
-                    HomeUI()
-                }
+                MainUI()
             }
         }
     }

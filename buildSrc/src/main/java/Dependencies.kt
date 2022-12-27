@@ -50,4 +50,9 @@ object Dependencies {
 
     }
 
+    object Test {
+        private const val jUnitVersion = "5.7.1"
+        const val Junit = "org.junit.jupiter:junit-jupiter:$jUnitVersion"
+    }
+
 }
