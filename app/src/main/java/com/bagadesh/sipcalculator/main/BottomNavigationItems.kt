@@ -7,5 +7,6 @@ import com.bagadesh.sipcalculator.ui.bottomNavigation.Screen
  */
 val bottomNavigationItems = listOf(
     Screen.Home,
-    Screen.Saved
+    Screen.Saved,
+    Screen.Profile
 )

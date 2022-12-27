@@ -82,7 +82,7 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.0-rc01")
 
     val nav_version ="2.5.1"
-
+3
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.25.0")
 
