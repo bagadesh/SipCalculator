@@ -31,16 +31,47 @@ fun <T> Data<T>.expect(other: Data<T>): Boolean {
         isSuccess() && other.isSuccess() -> {
             data == other.data
         }
+
         isSuccess() && other.isFailure() -> {
             false
         }
+
         isFailure() && other.isSuccess() -> {
             false
         }
+
         isFailure() && other.isFailure() -> {
             exception == other.exception
         }
-        else -> { false }
+
+        else -> {
+            false
+        }
     }
 
+}
+
+fun <T> Data<T>.expectAssert(other: Data<T>) {
+    when {
+        isSuccess() && other.isSuccess() -> {
+            assert(data == other.data) { "Given $data \n Expected ${other.data}" }
+        }
+
+        isSuccess() && other.isFailure() -> {
+            assert(false) { "Given $data \n Expected ${other.exception}" }
+
+        }
+
+        isFailure() && other.isSuccess() -> {
+            assert(false) { "Given $exception \n Expected ${other.data}" }
+        }
+
+        isFailure() && other.isFailure() -> {
+            assert(exception == other.exception) { "Given $exception \n Expected ${other.exception}" }
+        }
+
+        else -> {
+            assert(false) { "Unexpected block" }
+        }
+    }
 }
