@@ -25,6 +25,7 @@ import com.bagadesh.sipcalculator.entities.SaveResultsCurrentData
 import com.bagadesh.sipcalculator.home.ui.cagr.CAGRUI
 import com.bagadesh.sipcalculator.home.ui.experiment.ExperimentUI
 import com.bagadesh.sipcalculator.home.ui.fire.FireUI
+import com.bagadesh.sipcalculator.home.ui.inflation.InflationUI
 import com.bagadesh.sipcalculator.home.ui.investment.InvestmentTypeUI
 import com.bagadesh.sipcalculator.home.ui.oneTime.OneTimeUI
 import com.bagadesh.sipcalculator.home.ui.sip.SipUI
@@ -49,46 +50,33 @@ const val DefaultYear = 5
 fun HomeUI(
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-    val focusManager = LocalFocusManager.current
-    var investmentType by homeViewModel.investmentType
-    var saveResultsCurrentData: SaveResultsCurrentData by remember { mutableStateOf(SaveResultsCurrentData.Empty) }
-    val systemUIController = rememberSystemUiController()
-    systemUIController.setStatusBarColor(color = Color.Transparent)
-    systemUIController.isStatusBarVisible = false
-
-
     val bottomSheetScaffoldState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-        confirmStateChange = {
-            focusManager.clearFocus()
-            return@rememberModalBottomSheetState true
-        })
-    val scope = rememberCoroutineScope()
+        initialValue = ModalBottomSheetValue.Hidden
+    )
+    val coroutineScope = rememberCoroutineScope()
+    var investmentType by homeViewModel.investmentType
 
-    val onSaveClick = { result: SaveResultsCurrentData ->
-        saveResultsCurrentData = result
-        scope.launch {
-            if (bottomSheetScaffoldState.isVisible) {
+    val onSaveClick: (SaveResultsCurrentData) -> Unit = {
+        coroutineScope.launch {
+            if (it is SaveResultsCurrentData.Success) {
+                homeViewModel.saveResults(
+                    title = "",
+                    investmentType = it.investmentType,
+                    investmentDetails = it.investDetails
+                )
                 bottomSheetScaffoldState.hide()
-            } else {
-                bottomSheetScaffoldState.show()
             }
         }
-        Unit
     }
 
     ModalBottomSheetLayout(
         sheetContent = {
-            SaveResultsUI(saveResultsCurrentData, homeViewModel) {
-                scope.launch {
+            SaveResultsUI(SaveResultsCurrentData.Empty, homeViewModel) {
+                coroutineScope.launch {
                     bottomSheetScaffoldState.hide()
                 }
             }
         },
-        sheetContentColor = Color.Transparent,
-        sheetElevation = 10.dp,
-        sheetBackgroundColor = Color.Transparent,
-        scrimColor = Color.Black.copy(alpha = 0.8f),
         sheetState = bottomSheetScaffoldState,
     ) {
         Column(
@@ -120,6 +108,7 @@ fun  ContentBasedOnInvestmentType(
         InvestmentType.SIP_THEN_ONE_TIME -> SipThenOneTimeUI(onSaveClick = onSaveClick)
         InvestmentType.CAGR -> CAGRUI()
         InvestmentType.FIRE -> FireUI()
+        InvestmentType.INFLATION -> InflationUI()
         InvestmentType.EXPERIMENT -> ExperimentUI()
     }
 }
@@ -129,75 +118,55 @@ fun SaveResultsUI(
     saveResultsCurrentData: SaveResultsCurrentData, homeViewModel: HomeViewModel, onClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
-    var title by remember { mutableStateOf("") }
-    var isError by remember { mutableStateOf(false) }
+    var title by remember {
+        mutableStateOf("")
+    }
+
     Column(
         modifier = Modifier
-            .padding(0.dp)
-            .clip(RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
             .fillMaxWidth()
-            .wrapContentSize()
-            .height(intrinsicSize = IntrinsicSize.Min)
-            .background(color = MaterialTheme.colors.background)
-            .clickable {
-                focusManager.clearFocus()
-            }
-            .padding(10.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+            .height(250.dp)
+            .padding(10.dp)
+            .clip(RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Title",
-            modifier = Modifier.padding(0.dp),
-            fontSize = 26.sp,
-            fontWeight = FontWeight.SemiBold
+            text = "Save Result",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
         )
-        OutlinedTextField(
+        Spacer(modifier = Modifier.height(20.dp))
+        TextField(
             value = title,
             onValueChange = {
                 title = it
             },
-            modifier = Modifier
-                .padding(0.dp)
-                .fillMaxWidth(),
-            isError = isError,
             placeholder = {
-                Text(text = "ex: Retirement", color = LocalTextStyle.current.color.copy(alpha = .2f))
-            }
+                Text(text = "Title")
+            },
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
+            ),
+            shape = RoundedCornerShape(10.dp),
+            modifier = Modifier.fillMaxWidth()
         )
+        Spacer(modifier = Modifier.height(20.dp))
         Button(
             onClick = {
-                if (title.isEmpty()) {
-                    isError = true
-                    return@Button
-                }
-                when (saveResultsCurrentData) {
-                    SaveResultsCurrentData.Empty -> {
-                        isError = true
-                    }
-                    is SaveResultsCurrentData.Success -> {
-                        focusManager.clearFocus()
-                        homeViewModel.saveResults(
-                            title = title,
-                            investmentType = saveResultsCurrentData.investmentType,
-                            investmentDetails = saveResultsCurrentData.investDetails
-                        )
-                        isError = false
-                        title = ""
-                        onClick()
-                    }
-                }
-
+                focusManager.clearFocus()
+                onClick()
             },
             modifier = Modifier
-                .padding(0.dp)
-                .clip(RoundedCornerShape(10.dp))
                 .fillMaxWidth()
-                .height(60.dp)
-                .align(Alignment.CenterHorizontally)
+                .height(50.dp),
+            shape = RoundedCornerShape(10.dp),
+            colors = ButtonDefaults.buttonColors(
+                contentColor = buttonTextColor
+            )
         ) {
-            Text(text = "Save", color = buttonTextColor)
+            Text(text = "Save")
         }
     }
 }
-
-

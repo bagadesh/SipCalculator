@@ -9,6 +9,7 @@ enum class InvestmentType(val displayValue: String) {
     ONE_TIME("One Time"),
     SIP("SIP"),
     SIP_THEN_ONE_TIME("SIP then One Time"),
+    INFLATION("Inflation"),
     CAGR("CAGR"),
     FIRE("FIRE"),
     EXPERIMENT("Experiment");

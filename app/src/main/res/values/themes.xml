@@ -2,8 +2,8 @@
 <resources>
 
     <style name="Theme.SipCalculator" parent="Theme.SplashScreen">
-        <item name="android:statusBarColor">@color/purple_700</item>
-        <item name="windowSplashScreenBackground">@color/teal_200</item>
+        <item name="android:statusBarColor">@color/futuristic_background</item>
+        <item name="windowSplashScreenBackground">@color/futuristic_background</item>
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
