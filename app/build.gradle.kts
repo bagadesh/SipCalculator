@@ -1,25 +1,25 @@
-
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("dagger.hilt.android.plugin")
-    id("kotlin-kapt")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.hilt.android)
+    kotlin("kapt")
 }
 
 android {
-    compileSdk = 32
+    namespace = "com.bagadesh.sipcalculator"
+    compileSdk = 34
+
     defaultConfig {
-        minSdk = 23
-        targetSdk = 32
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        //consumerProguardFile("consumer-rules.pro")
-        versionCode =  1
-        versionName =  "1.0"
         applicationId = "com.bagadesh.sipcalculator"
+        minSdk = 24
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
-       // signingConfig = signingConfigs.getByName("releaseConfig")
     }
 
     buildTypes {
@@ -28,67 +28,60 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
-        freeCompilerArgs = freeCompilerArgs.plus("-Xjvm-default=all")
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Dependencies.Compose.Version
+        kotlinCompilerExtensionVersion = "1.5.11"
     }
-    packagingOptions {
+    packaging {
         resources {
-            resources.excludes.add("META-INF/*")
-            resources.excludes.add("META-INF/**/*")
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-
 }
 
-
 dependencies {
-    val composeVersion = Dependencies.Compose.Version
-    implementation ("androidx.core:core-ktx:1.8.0")
-    implementation("androidx.compose.ui:ui:$composeVersion")
-    implementation("androidx.compose.material:material:$composeVersion")
-    implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
-    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
-    implementation ("androidx.activity:activity-compose:1.5.1")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
-    debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:$composeVersion")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material)
+    
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(Dependencies.Hilt.Android)
-    kapt(Dependencies.Hilt.Compiler)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
 
     implementation(project(":domain"))
     implementation(project(":data"))
 
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.mpandroidchart)
+    implementation(libs.androidx.core.splashscreen)
 
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.24.13-rc")
-    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
-
-    implementation("androidx.core:core-splashscreen:1.0.0-rc01")
-
-    val nav_version ="2.5.1"
-3
-    implementation("androidx.navigation:navigation-compose:$nav_version")
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.25.0")
-
-    implementation(Dependencies.Gson.gson)
-    implementation(Dependencies.Room.Runtime)
-    implementation(Dependencies.Compose.ConstraintLayout)
-    implementation(Dependencies.Accompanist.Pager)
-    implementation(Dependencies.Accompanist.PagerIndicators)
+    implementation(libs.gson)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.accompanist.pager)
+    implementation(libs.accompanist.pager.indicators)
 }

@@ -1,16 +1,22 @@
 plugins {
-    id("java-library")
-    id("org.jetbrains.kotlin.jvm")
-    id("kotlin-kapt")
+    alias(libs.plugins.jetbrains.kotlin.jvm)
+    kotlin("kapt")
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 }
 
 dependencies {
-    kapt(Dependencies.Hilt.Compiler)
-    implementation(Dependencies.Hilt.Core)
-    implementation(Dependencies.Coroutine.Core)
+    implementation(libs.hilt.core)
+    kapt(libs.hilt.compiler)
+    implementation(libs.javax.inject)
+    implementation(libs.kotlinx.coroutines.core)
 }

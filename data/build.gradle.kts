@@ -1,17 +1,19 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.jetbrains.kotlin.android)
+    kotlin("kapt")
 }
 
 android {
-    compileSdk = 32
+    namespace = "com.bagadesh.data"
+    compileSdk = 34
+
     defaultConfig {
-        minSdk = 23
-        targetSdk = 32
+        minSdk = 24
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFile("consumer-rules.pro")
+        consumerProguardFiles("consumer-rules.pro")
     }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -19,35 +21,35 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.4.2")
-    implementation("com.google.android.material:material:1.6.1")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.com.google.android.material)
 
     implementation(project(":domain"))
-    kapt(Dependencies.Hilt.Compiler)
-    implementation(Dependencies.Hilt.Core)
+    
+    implementation(libs.hilt.core)
+    kapt(libs.hilt.compiler)
 
-    implementation(Dependencies.Persistence.DataStore)
-    implementation(Dependencies.Room.Runtime)
-    implementation(Dependencies.Room.Ktx)
-    kapt(Dependencies.Room.Compiler)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
 
-    implementation(Dependencies.Gson.gson)
-    implementation(Dependencies.Math.BigMath)
+    implementation(libs.gson)
+    implementation(libs.big.math)
 
-
-    testImplementation(Dependencies.Test.Junit)
+    testImplementation(libs.junit.jupiter)
 }
 
-tasks.withType<Test>() {
+tasks.withType<Test> {
     useJUnitPlatform()
 }
