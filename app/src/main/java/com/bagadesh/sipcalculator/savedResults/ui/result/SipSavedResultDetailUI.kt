@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import com.bagadesh.domain.constants.SipInvestmentDetailsConstants
 import com.bagadesh.sipcalculator.R
 import com.bagadesh.sipcalculator.math.SmartMoneyRepresent
+import com.bagadesh.sipcalculator.ui.currency.DisplayCurrency
 import java.math.RoundingMode
 
 /**
@@ -40,13 +41,13 @@ fun SipSavedResultDetailUI(
         Row(modifier = Modifier.fillMaxWidth()) {
             MyUI(
                 icon = R.drawable.ic_target,
-                value = SmartMoneyRepresent.makeItPretty(total),
+                value = DisplayCurrency.display(SmartMoneyRepresent.formatToIndianCurrency(total)),
                 heading = "Target",
                 modifier = Modifier.weight(1f)
             )
             MyUI(
                 icon = R.drawable.ic_box_money_icon,
-                value = SmartMoneyRepresent.makeItPretty(totalInvested),
+                value = DisplayCurrency.display(SmartMoneyRepresent.formatToIndianCurrency(totalInvested)),
                 heading = "Total Invested",
                 modifier = Modifier.weight(1f)
             )
@@ -54,7 +55,7 @@ fun SipSavedResultDetailUI(
         Row(modifier = Modifier.fillMaxWidth()) {
             MyUI(
                 icon = R.drawable.ic_box_money_icon,
-                value = SmartMoneyRepresent.makeItPretty(sipAmount),
+                value = DisplayCurrency.display(SmartMoneyRepresent.formatToIndianCurrency(sipAmount)),
                 heading = "Sip Amount",
                 modifier = Modifier.weight(1f)
             )

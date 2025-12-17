@@ -12,6 +12,7 @@ enum class InvestmentType(val displayValue: String) {
     INFLATION("Inflation"),
     CAGR("CAGR"),
     FIRE("FIRE"),
+    HOME_LOAN_EMI("Home Loan EMI"),
     EXPERIMENT("Experiment");
 
     companion object {

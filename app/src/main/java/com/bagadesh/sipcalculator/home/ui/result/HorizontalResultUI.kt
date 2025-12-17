@@ -161,7 +161,7 @@ fun ResultValue(
     fontSize: TextUnit = 12.sp
 ) {
     Text(
-        text = DisplayCurrency.display(SmartMoneyRepresent.makeItIntegerWithoutDecimal(value)),
+        text = DisplayCurrency.display(SmartMoneyRepresent.formatToIndianCurrency(value)),
         modifier = modifier,
         fontWeight = FontWeight.Bold,
         fontSize = fontSize,

@@ -76,7 +76,7 @@ fun OneTimeUI(
                         InvestmentType.ONE_TIME,
                         mapOf(
                             OneTimeInvestmentDetailsConstants.ONETIME_AMOUNT to principal,
-                            OneTimeInvestmentDetailsConstants.RATE_OF_RETURN to interest,
+                            OneTimeInvestmentDetailsConstants.RATE_OF_RETURN to interest.toString(),
                             OneTimeInvestmentDetailsConstants.TENURE to year,
                             OneTimeInvestmentDetailsConstants.COMPOUNDING_FREQUENCY to compoundFrequency.displayValue,
                             OneTimeInvestmentDetailsConstants.TOTAL to it.result,

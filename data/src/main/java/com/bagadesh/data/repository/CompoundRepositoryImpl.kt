@@ -143,4 +143,71 @@ class CompoundRepositoryImpl @Inject constructor() : CompoundRepository {
             Data.Failure(exception = exception)
         }
     }
+
+    override fun calculateHomeLoanEMI(request: com.bagadesh.domain.requests.HomeLoanEMIRequest): Data<com.bagadesh.domain.entities.HomeLoanEMIResultData> {
+        return try {
+            val principal = request.principal
+            val rate = request.interestRate / 12 / 100
+            val tenureMonths = request.tenureYears * 12
+
+            val emi = if (rate != 0.0) {
+                (principal * rate * (1 + rate).pow(tenureMonths)) / ((1 + rate).pow(tenureMonths) - 1)
+            } else {
+                principal / tenureMonths
+            }
+
+            val totalPayment = emi * tenureMonths
+            val totalInterest = totalPayment - principal
+
+            // Inflation adjusted EMI value
+            // PV = EMI / (1 + inflation/100)^inflationYears
+            val inflationAdjustedEMI = emi / (1 + request.inflationRate / 100).pow(request.inflationYears)
+
+            // Calculate Yearly Rent Breakdown
+            val rentBreakdownList = mutableListOf<com.bagadesh.domain.entities.RentBreakdown>()
+            var currentMonthlyRent = request.currentRent
+            
+            for (year in 1..request.tenureYears) {
+                // Rent increases every year
+                if (year > 1) {
+                    currentMonthlyRent *= (1 + request.rentIncreaseRate / 100)
+                }
+                val yearlyTotal = currentMonthlyRent * 12
+                rentBreakdownList.add(
+                    com.bagadesh.domain.entities.RentBreakdown(
+                        year = year,
+                        monthlyRent = currentMonthlyRent,
+                        yearlyTotal = yearlyTotal
+                    )
+                )
+            }
+
+            // Calculate Yearly Inflation Breakdown
+            val inflationBreakdownList = mutableListOf<com.bagadesh.domain.entities.InflationBreakdown>()
+            for (year in 1..request.tenureYears) {
+                // Inflation adjusted EMI decreases every year in terms of purchasing power
+                // PV = EMI / (1 + inflation/100)^year
+                val adjustedEmi = emi / (1 + request.inflationRate / 100).pow(year)
+                inflationBreakdownList.add(
+                    com.bagadesh.domain.entities.InflationBreakdown(
+                        year = year,
+                        inflationAdjustedEmi = adjustedEmi
+                    )
+                )
+            }
+
+            Data.Success(
+                com.bagadesh.domain.entities.HomeLoanEMIResultData(
+                    emi = String.format("%.0f", emi),
+                    totalInterest = String.format("%.0f", totalInterest),
+                    totalPayment = String.format("%.0f", totalPayment),
+                    inflationAdjustedEMI = String.format("%.0f", inflationAdjustedEMI),
+                    yearlyRentBreakdown = rentBreakdownList,
+                    yearlyInflationBreakdown = inflationBreakdownList
+                )
+            )
+        } catch (exception: Exception) {
+            Data.Failure(exception = exception)
+        }
+    }
 }

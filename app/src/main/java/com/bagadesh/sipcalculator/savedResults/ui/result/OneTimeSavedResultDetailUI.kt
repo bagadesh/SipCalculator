@@ -20,6 +20,7 @@ import com.bagadesh.domain.constants.SipInvestmentDetailsConstants
 import com.bagadesh.sipcalculator.R
 import com.bagadesh.sipcalculator.math.SmartMoneyRepresent
 import com.bagadesh.sipcalculator.savedResults.ui.frontalIconSize
+import com.bagadesh.sipcalculator.ui.currency.DisplayCurrency
 import java.math.RoundingMode
 
 /**
@@ -49,13 +50,13 @@ fun OneTimeSavedResultDetailUI(
         Row(modifier = Modifier.fillMaxWidth()) {
             MyUI(
                 icon = R.drawable.ic_target,
-                value = SmartMoneyRepresent.makeItPretty(total),
+                value = DisplayCurrency.display(SmartMoneyRepresent.formatToIndianCurrency(total)),
                 heading = "Target",
                 modifier = Modifier.weight(1f)
             )
             MyUI(
                 icon = R.drawable.ic_box_money_icon,
-                value = SmartMoneyRepresent.makeItPretty(oneTimeAmount),
+                value = DisplayCurrency.display(SmartMoneyRepresent.formatToIndianCurrency(oneTimeAmount)),
                 heading = "Invested",
                 modifier = Modifier.weight(1f)
             )

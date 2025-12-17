@@ -38,7 +38,7 @@ class SipThenOneTimeViewModel @Inject constructor(
     var year = mutableStateOf(DefaultYear)
     var oneTimeYear = mutableStateOf(DefaultYear)
     var compoundFrequency = mutableStateOf(CompoundFrequency.YEARLY)
-    private val inflationAdjustedReturn: Int
+    private val inflationAdjustedReturn: Double
         get() = oneTimeInterest.value - inflationRate.value
 
     var investmentResultData: MutableStateFlow<UIState<SipThenOneTimeResultData>> = MutableStateFlow(UIState.Empty())
@@ -60,7 +60,7 @@ class SipThenOneTimeViewModel @Inject constructor(
     }
 
 
-    private suspend fun executeSipThenOneTimeUseCaseCase(oneTimeInterestRate: Int = oneTimeInterest.value): UIState<SipThenOneTimeResultData> {
+    private suspend fun executeSipThenOneTimeUseCaseCase(oneTimeInterestRate: Double = oneTimeInterest.value): UIState<SipThenOneTimeResultData> {
         return when (
             val result = calculateSipThenOneTimeUseCase.execute(
                 param = SipThenOneTimeUseCaseRequest(

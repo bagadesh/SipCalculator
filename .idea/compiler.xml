@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="1.8">
-      <module name="SipCalculator.app" target="11" />
+    <bytecodeTargetLevel target="17">
       <module name="SipCalculator.buildSrc" target="11" />
       <module name="SipCalculator.buildSrc.main" target="11" />
       <module name="SipCalculator.buildSrc.test" target="11" />
-      <module name="SipCalculator.data" target="11" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="SipCalculator.domain" options="-proc:none" />
+      <module name="SipCalculator.domain.main" options="-proc:none" />
+      <module name="SipCalculator.domain.test" options="-proc:none" />
+    </option>
   </component>
 </project>

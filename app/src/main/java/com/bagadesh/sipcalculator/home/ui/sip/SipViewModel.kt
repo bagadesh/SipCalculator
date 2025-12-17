@@ -35,7 +35,7 @@ class SipViewModel @Inject constructor(
     var interest = mutableStateOf(DefaultRateOfInterest)
     var inflationRate = mutableStateOf(DefaultRateOfInflation)
     var year = mutableStateOf(DefaultYear)
-    private val inflationAdjustedReturn: Int
+    private val inflationAdjustedReturn: Double
         get() = interest.value - inflationRate.value
 
     var investmentResultData: MutableStateFlow<UIState<SipResultData>> = MutableStateFlow(UIState.Empty())
@@ -57,7 +57,7 @@ class SipViewModel @Inject constructor(
     }
 
 
-    private suspend fun executeSipResultUseCase(rateOfReturn: Int = interest.value): UIState<SipResultData> {
+    private suspend fun executeSipResultUseCase(rateOfReturn: Double = interest.value): UIState<SipResultData> {
         return when (
             val result = calculateSipResultUseCase.execute(
                 param = CalculateSipResultRequest(

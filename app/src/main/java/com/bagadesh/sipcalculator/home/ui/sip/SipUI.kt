@@ -46,7 +46,7 @@ fun SipUI(
         PrincipalUI(principal = sipAmount) { principal -> sipAmount = principal }
         30.dp.SizeSpacer()
         RateOfInterestUI(
-            defaultInterest = DefaultRateOfInterest,
+            defaultInterest = interest,
             maxInterest = DefaultRateOfInterestMax,
             onValueChange = { changedInterest ->
                 interest = changedInterest
@@ -71,7 +71,7 @@ fun SipUI(
                         investmentType,
                         mapOf(
                             SipInvestmentDetailsConstants.SIP_AMOUNT to sipAmount,
-                            SipInvestmentDetailsConstants.RATE_OF_RETURN to interest,
+                            SipInvestmentDetailsConstants.RATE_OF_RETURN to interest.toString(),
                             SipInvestmentDetailsConstants.TENURE to year,
                             SipInvestmentDetailsConstants.TOTAL to it.result,
                             SipInvestmentDetailsConstants.INTEREST to it.interestEarned,

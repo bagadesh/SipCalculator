@@ -33,6 +33,17 @@ object SmartMoneyRepresent {
         return numberFormatInstance.format(valueBigInteger)
     }
 
+    fun formatToIndianCurrency(value: Double): String {
+        val format = NumberFormat.getNumberInstance(Locale("en", "IN"))
+        format.maximumFractionDigits = 2
+        return format.format(value)
+    }
+
+    fun formatToIndianCurrency(value: String): String {
+        val doubleValue = value.toDoubleOrNull() ?: 0.0
+        return formatToIndianCurrency(doubleValue)
+    }
+
     private fun String.lengthBeforeBot(): Int {
         if (length == 0) {
             return 0

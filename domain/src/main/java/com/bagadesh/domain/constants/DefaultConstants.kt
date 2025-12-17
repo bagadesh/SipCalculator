@@ -12,6 +12,6 @@ object DefaultConstants {
     }
 
     object FireConstants {
-        const val MONTHLY_EXPANSE = "50000"
+        const val MONTHLY_EXPANSE = "120000"
     }
 }

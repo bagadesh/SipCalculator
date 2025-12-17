@@ -82,7 +82,7 @@ fun FireUIScreen(
                     Text(
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
-                        text = DisplayCurrency.display(SmartMoneyRepresent.makeItIntegerWithoutDecimal(it.requiredCorpus.value))
+                        text = DisplayCurrency.display(SmartMoneyRepresent.formatToIndianCurrency(it.requiredCorpus.value))
                     )
                 }
             }

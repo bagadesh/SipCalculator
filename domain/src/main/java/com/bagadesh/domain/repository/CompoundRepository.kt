@@ -10,6 +10,9 @@ import com.bagadesh.domain.usecases.CalculateSipResultRequest
 import com.bagadesh.domain.usecases.OneTimeResultDataRequest
 import com.bagadesh.domain.usecases.cagr.CalculateCAGRRequest
 
+import com.bagadesh.domain.entities.HomeLoanEMIResultData
+import com.bagadesh.domain.requests.HomeLoanEMIRequest
+
 /**
  * Created by bagadesh on 02/08/22.
  */
@@ -22,5 +25,7 @@ interface CompoundRepository {
     fun calculateInterest(request: CalculateInterestRequest): Data<InterestResultData>
 
     fun calculateCAGR(request: CalculateCAGRRequest): Data<CAGRResult>
+
+    fun calculateHomeLoanEMI(request: HomeLoanEMIRequest): Data<HomeLoanEMIResultData>
 
 }

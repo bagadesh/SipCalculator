@@ -26,6 +26,7 @@ import com.bagadesh.sipcalculator.home.ui.cagr.CAGRUI
 import com.bagadesh.sipcalculator.home.ui.experiment.ExperimentUI
 import com.bagadesh.sipcalculator.home.ui.fire.FireUI
 import com.bagadesh.sipcalculator.home.ui.inflation.InflationUI
+import com.bagadesh.sipcalculator.home.ui.homeloan.HomeLoanEMIUI
 import com.bagadesh.sipcalculator.home.ui.investment.InvestmentTypeUI
 import com.bagadesh.sipcalculator.home.ui.oneTime.OneTimeUI
 import com.bagadesh.sipcalculator.home.ui.sip.SipUI
@@ -40,9 +41,9 @@ import kotlinx.coroutines.launch
  */
 
 const val DefaultPrincipal = "1000"
-const val DefaultRateOfInterest = 12
-const val DefaultRateOfInflation = 6
-const val DefaultRateOfInterestMax = 40
+const val DefaultRateOfInterest = 12.0
+const val DefaultRateOfInflation = 6.0
+const val DefaultRateOfInterestMax = 40.0
 const val DefaultYear = 5
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -109,6 +110,7 @@ fun  ContentBasedOnInvestmentType(
         InvestmentType.CAGR -> CAGRUI()
         InvestmentType.FIRE -> FireUI()
         InvestmentType.INFLATION -> InflationUI()
+        InvestmentType.HOME_LOAN_EMI -> HomeLoanEMIUI()
         InvestmentType.EXPERIMENT -> ExperimentUI()
     }
 }

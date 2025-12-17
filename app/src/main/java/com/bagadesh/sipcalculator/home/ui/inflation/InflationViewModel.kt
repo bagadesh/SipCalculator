@@ -16,11 +16,11 @@ import androidx.compose.runtime.MutableState
 class InflationViewModel @Inject constructor() : ViewModel() {
 
     var amount = mutableStateOf("100000")
-    var inflationRate = mutableStateOf(7) // Default 7%
+    var inflationRate = mutableStateOf(7.0) // Default 7%
     var tenure = mutableStateOf(10) // Default 10 years
 
     data class InflationResult(
-        val targetInflation: Int,
+        val targetInflation: Double,
         val targetValue: Double,
         val minusOneValue: Double,
         val plusOneValue: Double
@@ -37,13 +37,13 @@ class InflationViewModel @Inject constructor() : ViewModel() {
                 val n = tenure.value.toDouble()
 
                 val targetVal = calculateWorth(p, r, n)
-                val minusOneVal = calculateWorth(p, r - 1, n)
-                val plusOneVal = calculateWorth(p, r + 1, n)
+                val minusOneVal = calculateWorth(p, r - 1.0, n)
+                val plusOneVal = calculateWorth(p, r + 1.0, n)
 
                 resultState.emit(
                     UIState.Success(
                         InflationResult(
-                            targetInflation = r.toInt(),
+                            targetInflation = r,
                             targetValue = targetVal,
                             minusOneValue = minusOneVal,
                             plusOneValue = plusOneVal

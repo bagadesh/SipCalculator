@@ -56,7 +56,7 @@ fun SipThenOneTimeUI(
         PrincipalUI(principal = sipAmount) { principal -> sipAmount = principal }
         30.dp.SizeSpacer()
         RateOfInterestUI(
-            defaultInterest = DefaultRateOfInterest,
+            defaultInterest = interest,
             maxInterest = DefaultRateOfInterestMax,
             onValueChange = { changedInterest ->
                 interest = changedInterest
@@ -73,7 +73,7 @@ fun SipThenOneTimeUI(
             )
             10.dp.SizeSpacer()
             RateOfInterestUI(
-                defaultInterest = DefaultRateOfInterest,
+                defaultInterest = interestForSipThenOneTime,
                 maxInterest = DefaultRateOfInterestMax,
                 onValueChange = { changedInterest ->
                     interestForSipThenOneTime = changedInterest
@@ -105,7 +105,7 @@ fun SipThenOneTimeUI(
                         investmentType,
                         mapOf(
                             SipThenOneTimeInvestmentDetailsConstants.SIP_AMOUNT to sipAmount,
-                            SipThenOneTimeInvestmentDetailsConstants.RATE_OF_RETURN to interest,
+                            SipThenOneTimeInvestmentDetailsConstants.RATE_OF_RETURN to interest.toString(),
                             SipThenOneTimeInvestmentDetailsConstants.TENURE to year,
                             SipThenOneTimeInvestmentDetailsConstants.COMPOUNDING_FREQUENCY to compoundFrequency.displayValue,
 
@@ -117,7 +117,7 @@ fun SipThenOneTimeUI(
                             SipThenOneTimeInvestmentDetailsConstants.TOTAL_FOR_ONETIME to it.oneTimeResultData.result,
 
                             SipThenOneTimeInvestmentDetailsConstants.TENURE_FOR_ONETIME_AFTER_SIP to yearForSipThenOneTime,
-                            SipThenOneTimeInvestmentDetailsConstants.RATE_OF_RETURN_FOR_ONETIME_AFTER_SIP to interestForSipThenOneTime,
+                            SipThenOneTimeInvestmentDetailsConstants.RATE_OF_RETURN_FOR_ONETIME_AFTER_SIP to interestForSipThenOneTime.toString(),
                         )
                     )
                 )

@@ -34,7 +34,7 @@ class OneTimeViewModel @Inject constructor(
     var inflationRate = mutableStateOf(DefaultRateOfInflation)
     var year = mutableStateOf(DefaultYear)
     var compoundFrequency = mutableStateOf(CompoundFrequency.YEARLY)
-    private val inflationAdjustedReturn: Int
+    private val inflationAdjustedReturn: Double
         get() = interest.value - inflationRate.value
 
     var investmentResultData: MutableStateFlow<UIState<OneTimeResultData>> = MutableStateFlow(UIState.Empty())
@@ -54,7 +54,7 @@ class OneTimeViewModel @Inject constructor(
         inflationAdjustedResultData.tryEmit(value = UIState.Empty())
     }
 
-    private suspend fun executeOneTimeUseCase(rateOfReturn: Int = interest.value): UIState<OneTimeResultData> {
+    private suspend fun executeOneTimeUseCase(rateOfReturn: Double = interest.value): UIState<OneTimeResultData> {
         return when (
             val result = calculateOneTimeUseCase.execute(
                 param = OneTimeResultDataRequest(

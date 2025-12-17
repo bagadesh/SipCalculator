@@ -20,7 +20,7 @@ import com.bagadesh.sipcalculator.ui.base.Heading
 import com.bagadesh.sipcalculator.ui.base.SizeSpacer
 import com.bagadesh.sipcalculator.ui.base.UIStatePark
 import com.bagadesh.sipcalculator.home.ui.result.ClearResultButton
-import java.text.DecimalFormat
+import com.bagadesh.sipcalculator.math.SmartMoneyRepresent
 
 @Composable
 fun InflationUI(
@@ -41,7 +41,7 @@ fun InflationUI(
         RateOfInterestUI(
             title = "Inflation Rate (%)",
             defaultInterest = inflationRate,
-            maxInterest = 50,
+            maxInterest = 50.0,
             onValueChange = { inflationRate = it }
         )
         30.dp.SizeSpacer()
@@ -61,8 +61,6 @@ fun InflationUI(
 
 @Composable
 fun InflationResultCard(result: InflationViewModel.InflationResult) {
-    val formatter = DecimalFormat("#,##,###.##")
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -79,16 +77,16 @@ fun InflationResultCard(result: InflationViewModel.InflationResult) {
         
         ResultRow(
             label = "At ${result.targetInflation - 1}% Inflation",
-            value = formatter.format(result.minusOneValue)
+            value = SmartMoneyRepresent.formatToIndianCurrency(result.minusOneValue)
         )
         ResultRow(
             label = "At ${result.targetInflation}% Inflation",
-            value = formatter.format(result.targetValue),
+            value = SmartMoneyRepresent.formatToIndianCurrency(result.targetValue),
             isPrimary = true
         )
         ResultRow(
             label = "At ${result.targetInflation + 1}% Inflation",
-            value = formatter.format(result.plusOneValue)
+            value = SmartMoneyRepresent.formatToIndianCurrency(result.plusOneValue)
         )
     }
 }
