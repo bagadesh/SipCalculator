@@ -12,9 +12,9 @@ import com.bagadesh.domain.usecases.fire.CalculateFireRequest
 import com.bagadesh.domain.usecases.fire.CalculateFireUseCase
 import com.bagadesh.sipcalculator.entities.states.UIState
 import com.bagadesh.sipcalculator.extensions.toUIResult
-import com.bagadesh.sipcalculator.home.ui.DefaultPrincipal
+import com.bagadesh.sipcalculator.home.ui.DefaultRateOfInflation
+import com.bagadesh.sipcalculator.home.ui.DefaultYear
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,6 +28,9 @@ class FireViewModel @Inject constructor(
 ) : ViewModel() {
 
     var monthlyExpanse = mutableStateOf(DefaultConstants.FireConstants.MONTHLY_EXPANSE)
+    var inflationRate = mutableStateOf(DefaultRateOfInflation)
+    var tenure = mutableStateOf(30) // Default 30 years for projection
+
     var fireResult = MutableStateFlow<UIState<FireResults>>(UIState.Empty())
 
     fun calculate(
@@ -45,7 +48,9 @@ class FireViewModel @Inject constructor(
                     param =
                     CalculateFireRequest(
                         monthlyExpanse = monthlyExpanse,
-                        withdrawalPercentage = withdrawalPercentage
+                        withdrawalPercentage = withdrawalPercentage,
+                        inflationRate = Percentage(inflationRate.value),
+                        tenure = tenure.value
                     )
                 )
             )

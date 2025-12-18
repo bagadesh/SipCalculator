@@ -32,6 +32,8 @@ import com.bagadesh.sipcalculator.ui.base.money.MoneyRequestUI
 
 import com.bagadesh.sipcalculator.ui.base.ExpandableSection
 
+import com.bagadesh.domain.entities.SipBreakdown
+
 @Composable
 fun HomeLoanEMIUI(
     viewModel: HomeLoanEMIViewModel = hiltViewModel()
@@ -43,6 +45,7 @@ fun HomeLoanEMIUI(
     var inflationYears by viewModel.inflationYears
     var currentRent by viewModel.currentRent
     var rentIncreaseRate by viewModel.rentIncreaseRate
+    var sipInterestRate by viewModel.sipInterestRate
     val resultState by viewModel.resultState.collectAsState()
 
     Column(modifier = Modifier.padding(bottom = 100.dp)) {
@@ -95,6 +98,17 @@ fun HomeLoanEMIUI(
             
             TenureUI(value = inflationYears, onValueChange = { inflationYears = it })
             Text(text = "Adjusted after $inflationYears years", fontSize = 12.sp, color = Color.Gray)
+            30.dp.SizeSpacer()
+        }
+
+        ExpandableSection(title = "SIP Settings") {
+            10.dp.SizeSpacer()
+            RateOfInterestUI(
+                title = "SIP Interest Rate (%)",
+                defaultInterest = sipInterestRate.toDouble(),
+                maxInterest = 30.0,
+                onValueChange = { sipInterestRate = it }
+            )
             30.dp.SizeSpacer()
         }
 
@@ -203,6 +217,62 @@ fun HomeLoanResultCard(result: HomeLoanEMIResultData, inflationYears: Int) {
             }
         }
 
+        androidx.compose.material.Divider(
+            color = Color.Gray,
+            thickness = 1.dp,
+            modifier = Modifier.padding(vertical = 10.dp)
+        )
+
+        // SIP Projection Section
+        Text(
+            text = "SIP Projection",
+            color = Color.White,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            contentPadding = PaddingValues(horizontal = 4.dp)
+        ) {
+            items(result.yearlySipBreakdown) { breakdown ->
+                SipProjectionCard(breakdown)
+            }
+        }
+
+    }
+}
+
+@Composable
+fun SipProjectionCard(breakdown: SipBreakdown) {
+    Column(
+        modifier = Modifier
+            .width(160.dp)
+            .background(Color(0xFF2A303E), RoundedCornerShape(8.dp))
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Year ${breakdown.year}",
+            color = Color(0xFFB0B3B8),
+            fontSize = 12.sp
+        )
+        4.dp.SizeSpacer()
+        Text(
+            text = "₹ ${SmartMoneyRepresent.formatToIndianCurrency(breakdown.projectedValue)}",
+            color = Color.White,
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp,
+            textAlign = TextAlign.Center
+        )
+        2.dp.SizeSpacer()
+        Text(
+            text = "Invested: ₹ ${SmartMoneyRepresent.formatToIndianCurrency(breakdown.investableAmountMonthly)}/m",
+            color = Color.Gray,
+            fontSize = 10.sp,
+            textAlign = TextAlign.Center
+        )
     }
 }
 

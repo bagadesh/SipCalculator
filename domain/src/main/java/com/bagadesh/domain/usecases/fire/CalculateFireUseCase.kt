@@ -24,4 +24,6 @@ class CalculateFireUseCase @Inject constructor(
 data class CalculateFireRequest(
     val monthlyExpanse: Currency,
     val withdrawalPercentage: Percentage,
+    val inflationRate: Percentage,
+    val tenure: Int
 )

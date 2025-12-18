@@ -196,6 +196,47 @@ class CompoundRepositoryImpl @Inject constructor() : CompoundRepository {
                 )
             }
 
+            // Calculate Yearly SIP Breakdown
+            val sipBreakdownList = mutableListOf<com.bagadesh.domain.entities.SipBreakdown>()
+            var accumulatedCorpus = 0.0
+            val monthlySipInterestRate = request.sipInterestRate / 12 / 100
+            
+            var currentRentForSip = request.currentRent
+            
+            for (year in 1..request.tenureYears) {
+                // Determine rent for this year (starts increasing from year 2)
+                if (year > 1) {
+                    currentRentForSip *= (1 + request.rentIncreaseRate / 100)
+                }
+                
+                // 1. Grow previous corpus for 1 year (12 months)
+                if (accumulatedCorpus > 0) {
+                    accumulatedCorpus *= (1 + monthlySipInterestRate).pow(12)
+                }
+                
+                // 2. Add new investments if possible
+                val investableAmountMonthly = emi - currentRentForSip
+                var yearlyInvestment = 0.0
+                
+                if (investableAmountMonthly > 0) {
+                    yearlyInvestment = investableAmountMonthly * 12
+                    
+                    // Future Value of monthly SIP for 12 months
+                    val fvFactor = (1 + monthlySipInterestRate).pow(12) - 1
+                    val sipValueForYear = (investableAmountMonthly * fvFactor * (1 + monthlySipInterestRate)) / monthlySipInterestRate
+                    accumulatedCorpus += sipValueForYear
+                }
+                
+                sipBreakdownList.add(
+                    com.bagadesh.domain.entities.SipBreakdown(
+                        year = year,
+                        investableAmountMonthly = if (investableAmountMonthly > 0) investableAmountMonthly else 0.0,
+                        totalInvested = yearlyInvestment, 
+                        projectedValue = accumulatedCorpus
+                    )
+                )
+            }
+
             Data.Success(
                 com.bagadesh.domain.entities.HomeLoanEMIResultData(
                     emi = String.format("%.0f", emi),
@@ -203,7 +244,8 @@ class CompoundRepositoryImpl @Inject constructor() : CompoundRepository {
                     totalPayment = String.format("%.0f", totalPayment),
                     inflationAdjustedEMI = String.format("%.0f", inflationAdjustedEMI),
                     yearlyRentBreakdown = rentBreakdownList,
-                    yearlyInflationBreakdown = inflationBreakdownList
+                    yearlyInflationBreakdown = inflationBreakdownList,
+                    yearlySipBreakdown = sipBreakdownList
                 )
             )
         } catch (exception: Exception) {
