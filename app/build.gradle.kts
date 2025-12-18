@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -10,16 +13,16 @@ android {
     compileSdk = 34
 
     signingConfigs {
-        release {
+        create("release") {
             // storeFile will be provided by GitHub Actions using env var
-            def storeFilePath = System.getenv("SIGNING_STORE_FILE")
+            val storeFilePath = System.getenv("SIGNING_STORE_FILE")
             if (storeFilePath != null) {
-                storeFile file(storeFilePath)
+                storeFile = file(storeFilePath)
             }
 
-            storePassword System.getenv("SIGNING_STORE_PASSWORD")
-            keyAlias System.getenv("SIGNING_KEY_ALIAS")
-            keyPassword System.getenv("SIGNING_KEY_PASSWORD")
+            storePassword = System.getenv("SIGNING_STORE_PASSWORD")
+            keyAlias = System.getenv("SIGNING_KEY_ALIAS")
+            keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
         }
     }
 
@@ -40,7 +43,7 @@ android {
         release {
             isMinifyEnabled = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig signingConfigs.release
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
