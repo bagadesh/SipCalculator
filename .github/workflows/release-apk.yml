@@ -23,7 +23,7 @@ jobs:
 
       - name: Decode keystore
         run: |
-          echo "$SIGNING_STORE_FILE_BASE64" | base64 --decode > release-keystore.jks
+          echo "$SIGNING_STORE_FILE_BASE64" | base64 --decode > app/release-keystore.jks
         env:
           SIGNING_STORE_FILE_BASE64: ${{ secrets.SIGNING_STORE_FILE_BASE64 }}
 
