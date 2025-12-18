@@ -8,5 +8,7 @@ data class HomeLoanEMIRequest(
     val inflationYears: Int,
     val currentRent: Double,
     val rentIncreaseRate: Double,
-    val sipInterestRate: Double
+    val sipInterestRate: Double,
+    val homePriceAppreciationRate: Double,
+    val loanToValueRatio: Double
 )

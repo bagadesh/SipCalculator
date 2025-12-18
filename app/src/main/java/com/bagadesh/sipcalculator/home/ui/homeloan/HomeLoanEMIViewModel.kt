@@ -27,6 +27,8 @@ class HomeLoanEMIViewModel @Inject constructor(
     var currentRent = mutableStateOf("40000")
     var rentIncreaseRate = mutableStateOf(5.0)
     var sipInterestRate = mutableStateOf(12.0)
+    var homePriceAppreciationRate = mutableStateOf(5.0)
+    var loanToValueRatio = mutableStateOf(80.0)
 
     var resultState = MutableStateFlow<UIState<HomeLoanEMIResultData>>(UIState.Empty())
         private set
@@ -42,6 +44,8 @@ class HomeLoanEMIViewModel @Inject constructor(
                 val cRent = currentRent.value.toDoubleOrNull() ?: 0.0
                 val rIncrease = rentIncreaseRate.value
                 val sipR = sipInterestRate.value
+                val hpAppreciation = homePriceAppreciationRate.value
+                val ltv = loanToValueRatio.value
 
                 val request = HomeLoanEMIRequest(
                     principal = p,
@@ -51,7 +55,9 @@ class HomeLoanEMIViewModel @Inject constructor(
                     inflationYears = iYears,
                     currentRent = cRent,
                     rentIncreaseRate = rIncrease,
-                    sipInterestRate = sipR
+                    sipInterestRate = sipR,
+                    homePriceAppreciationRate = hpAppreciation,
+                    loanToValueRatio = ltv
                 )
 
                 when (val result = calculateHomeLoanEMIUseCase.execute(request)) {

@@ -2,6 +2,9 @@ package com.bagadesh.sipcalculator.home.ui.homeloan
 
 import androidx.compose.foundation.lazy.LazyRow
 import com.bagadesh.domain.entities.InflationBreakdown
+import com.bagadesh.domain.entities.HomePriceBreakdown
+import com.bagadesh.domain.entities.DownPaymentBreakdown
+import com.bagadesh.domain.entities.RentVsEmiBreakdown
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
@@ -46,6 +49,8 @@ fun HomeLoanEMIUI(
     var currentRent by viewModel.currentRent
     var rentIncreaseRate by viewModel.rentIncreaseRate
     var sipInterestRate by viewModel.sipInterestRate
+    var homePriceAppreciationRate by viewModel.homePriceAppreciationRate
+    var loanToValueRatio by viewModel.loanToValueRatio
     val resultState by viewModel.resultState.collectAsState()
 
     Column(modifier = Modifier.padding(bottom = 100.dp)) {
@@ -108,6 +113,24 @@ fun HomeLoanEMIUI(
                 defaultInterest = sipInterestRate.toDouble(),
                 maxInterest = 30.0,
                 onValueChange = { sipInterestRate = it }
+            )
+            30.dp.SizeSpacer()
+        }
+
+        ExpandableSection(title = "Home Price Settings") {
+            10.dp.SizeSpacer()
+            RateOfInterestUI(
+                title = "Appreciation Rate (%)",
+                defaultInterest = homePriceAppreciationRate,
+                maxInterest = 20.0,
+                onValueChange = { homePriceAppreciationRate = it }
+            )
+            30.dp.SizeSpacer()
+            RateOfInterestUI(
+                title = "Loan To Value Ratio (%)",
+                defaultInterest = loanToValueRatio,
+                maxInterest = 100.0,
+                onValueChange = { loanToValueRatio = it }
             )
             30.dp.SizeSpacer()
         }
@@ -241,6 +264,182 @@ fun HomeLoanResultCard(result: HomeLoanEMIResultData, inflationYears: Int) {
             }
         }
 
+        androidx.compose.material.Divider(
+            color = Color.Gray,
+            thickness = 1.dp,
+            modifier = Modifier.padding(vertical = 10.dp)
+        )
+
+        // Down Payment Projection Section
+        Text(
+            text = "Down Payment Opportunity Cost",
+            color = Color.White,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            contentPadding = PaddingValues(horizontal = 4.dp)
+        ) {
+            items(result.yearlyDownPaymentBreakdown) { breakdown ->
+                DownPaymentProjectionCard(breakdown)
+            }
+        }
+
+        androidx.compose.material.Divider(
+            color = Color.Gray,
+            thickness = 1.dp,
+            modifier = Modifier.padding(vertical = 10.dp)
+        )
+
+        // Home Price Projection Section
+        Text(
+            text = "Home Price Projection",
+            color = Color.White,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            contentPadding = PaddingValues(horizontal = 4.dp)
+        ) {
+            items(result.yearlyHomePriceBreakdown) { breakdown ->
+                HomePriceProjectionCard(breakdown)
+            }
+        }
+
+        androidx.compose.material.Divider(
+            color = Color.Gray,
+            thickness = 1.dp,
+            modifier = Modifier.padding(vertical = 10.dp)
+        )
+
+        // Rent vs EMI Savings Projection Section
+        Text(
+            text = "Rent - EMI Savings Projection",
+            color = Color.White,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            contentPadding = PaddingValues(horizontal = 4.dp)
+        ) {
+            items(result.yearlyRentVsEmiBreakdown) { breakdown ->
+                RentVsEmiProjectionCard(breakdown)
+            }
+        }
+
+    }
+}
+
+@Composable
+fun RentVsEmiProjectionCard(breakdown: RentVsEmiBreakdown) {
+    Column(
+        modifier = Modifier
+            .widthIn(min = 140.dp)
+            .background(Color(0xFF2A303E), RoundedCornerShape(8.dp))
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Year ${breakdown.year}",
+            color = Color(0xFFB0B3B8),
+            fontSize = 12.sp
+        )
+        4.dp.SizeSpacer()
+        
+        val valueText = if (breakdown.projectedValue > 0) {
+            "₹ ${SmartMoneyRepresent.formatToIndianCurrency(breakdown.projectedValue)}"
+        } else {
+             if (breakdown.monthlyExcessRent < 0) {
+                "- ₹ ${SmartMoneyRepresent.formatToIndianCurrency(Math.abs(breakdown.monthlyExcessRent))}/m"
+            } else {
+                "₹ 0"
+            }
+        }
+        
+        Text(
+            text = valueText,
+            color = if (breakdown.projectedValue > 0) Color.White else Color(0xFFFF6B6B),
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp,
+            textAlign = TextAlign.Center
+        )
+        2.dp.SizeSpacer()
+        Text(
+            text = if (breakdown.projectedValue > 0) "accumulated savings" else "monthly deficit",
+            color = Color.Gray,
+            fontSize = 10.sp
+        )
+    }
+}
+
+@Composable
+fun DownPaymentProjectionCard(breakdown: DownPaymentBreakdown) {
+    Column(
+        modifier = Modifier
+            .widthIn(min = 140.dp)
+            .background(Color(0xFF2A303E), RoundedCornerShape(8.dp))
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Year ${breakdown.year}",
+            color = Color(0xFFB0B3B8),
+            fontSize = 12.sp
+        )
+        4.dp.SizeSpacer()
+        Text(
+            text = "₹ ${SmartMoneyRepresent.formatToIndianCurrency(breakdown.projectedValue)}",
+            color = Color.White,
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp,
+            textAlign = TextAlign.Center
+        )
+        2.dp.SizeSpacer()
+        Text(
+            text = "opportunity cost",
+            color = Color.Gray,
+            fontSize = 10.sp
+        )
+    }
+}
+
+@Composable
+fun HomePriceProjectionCard(breakdown: HomePriceBreakdown) {
+    Column(
+        modifier = Modifier
+            .widthIn(min = 140.dp)
+            .background(Color(0xFF2A303E), RoundedCornerShape(8.dp))
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Year ${breakdown.year}",
+            color = Color(0xFFB0B3B8),
+            fontSize = 12.sp
+        )
+        4.dp.SizeSpacer()
+        Text(
+            text = "₹ ${SmartMoneyRepresent.formatToIndianCurrency(breakdown.projectedValue)}",
+            color = Color.White,
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp,
+            textAlign = TextAlign.Center
+        )
+        2.dp.SizeSpacer()
+        Text(
+            text = "projected value",
+            color = Color.Gray,
+            fontSize = 10.sp
+        )
     }
 }
 

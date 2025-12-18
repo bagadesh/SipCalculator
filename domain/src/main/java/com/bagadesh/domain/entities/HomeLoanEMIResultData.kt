@@ -7,7 +7,10 @@ data class HomeLoanEMIResultData(
     val inflationAdjustedEMI: String,
     val yearlyRentBreakdown: List<RentBreakdown>,
     val yearlyInflationBreakdown: List<InflationBreakdown>,
-    val yearlySipBreakdown: List<SipBreakdown>
+    val yearlySipBreakdown: List<SipBreakdown>,
+    val yearlyHomePriceBreakdown: List<HomePriceBreakdown>,
+    val yearlyDownPaymentBreakdown: List<DownPaymentBreakdown>,
+    val yearlyRentVsEmiBreakdown: List<RentVsEmiBreakdown>
 )
 
 data class RentBreakdown(
@@ -25,5 +28,21 @@ data class SipBreakdown(
     val year: Int,
     val investableAmountMonthly: Double,
     val totalInvested: Double,
+    val projectedValue: Double
+)
+
+data class HomePriceBreakdown(
+    val year: Int,
+    val projectedValue: Double
+)
+
+data class DownPaymentBreakdown(
+    val year: Int,
+    val projectedValue: Double
+)
+
+data class RentVsEmiBreakdown(
+    val year: Int,
+    val monthlyExcessRent: Double,
     val projectedValue: Double
 )

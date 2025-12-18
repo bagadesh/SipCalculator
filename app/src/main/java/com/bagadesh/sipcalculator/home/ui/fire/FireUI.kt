@@ -110,18 +110,18 @@ fun FireUIScreen(
         
         UIStatePark(results) {
             Column {
-                MyBoxUI {
-                    CenteredColumn(
-                        modifier = Modifier
-                            .wrapContentSize()
-                            .padding(5.dp),
-                        childPadding = 5.dp
-                    ) {
-                        Text(text = "Required corpus", fontWeight = FontWeight.Bold)
-                        Text(text = SmartMoneyRepresent.makeItPretty(it.requiredCorpus.value))
-                        Text(
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Bold,
+            MyBoxUI {
+                CenteredColumn(
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .padding(5.dp),
+                    childPadding = 5.dp
+                ) {
+                    Text(text = "Required corpus", fontWeight = FontWeight.Bold)
+                    Text(text = SmartMoneyRepresent.makeItPretty(it.requiredCorpus.value))
+                    Text(
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
                             text = DisplayCurrency.display(SmartMoneyRepresent.formatToIndianCurrency(it.requiredCorpus.value))
                         )
                     }

@@ -35,7 +35,7 @@ object SmartMoneyRepresent {
 
     fun formatToIndianCurrency(value: Double): String {
         val format = NumberFormat.getNumberInstance(Locale("en", "IN"))
-        format.maximumFractionDigits = 2
+        format.maximumFractionDigits = 0
         return format.format(value)
     }
 

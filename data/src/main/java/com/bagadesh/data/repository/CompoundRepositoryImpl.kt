@@ -237,6 +237,78 @@ class CompoundRepositoryImpl @Inject constructor() : CompoundRepository {
                 )
             }
 
+            // Calculate Yearly Home Price Breakdown
+            val homePriceBreakdownList = mutableListOf<com.bagadesh.domain.entities.HomePriceBreakdown>()
+            // Initial Home Price = Principal / (LTV / 100)
+            val ltv = if(request.loanToValueRatio > 0) request.loanToValueRatio / 100 else 1.0
+            var currentHomePrice = request.principal / ltv
+
+            for (year in 1..request.tenureYears) {
+                 if (year > 0) {
+                    currentHomePrice *= (1 + request.homePriceAppreciationRate / 100)
+                }
+                homePriceBreakdownList.add(
+                    com.bagadesh.domain.entities.HomePriceBreakdown(
+                        year = year,
+                        projectedValue = currentHomePrice
+                    )
+                )
+            }
+
+            // Calculate Yearly Down Payment Breakdown
+            val downPaymentBreakdownList = mutableListOf<com.bagadesh.domain.entities.DownPaymentBreakdown>()
+            // Down Payment = Home Price - Principal
+            val initialDownPayment = (request.principal / ltv) - request.principal
+            
+            for (year in 1..request.tenureYears) {
+                // Future Value of Lumpsum Down Payment
+                // FV = PV * (1 + r/n)^(nt)
+                val months = year * 12
+                val projectedDownPaymentValue = initialDownPayment * (1 + monthlySipInterestRate).pow(months)
+                
+                downPaymentBreakdownList.add(
+                    com.bagadesh.domain.entities.DownPaymentBreakdown(
+                        year = year,
+                        projectedValue = projectedDownPaymentValue
+                    )
+                )
+            }
+
+            // Calculate Yearly Rent vs EMI Breakdown
+            val rentVsEmiBreakdownList = mutableListOf<com.bagadesh.domain.entities.RentVsEmiBreakdown>()
+            var rentVsEmiCorpus = 0.0
+            var currentRentForRentVsEmi = request.currentRent
+
+            for (year in 1..request.tenureYears) {
+                 // Determine rent for this year (starts increasing from year 2)
+                if (year > 1) {
+                    currentRentForRentVsEmi *= (1 + request.rentIncreaseRate / 100)
+                }
+
+                val monthlyExcessRent = currentRentForRentVsEmi - emi
+
+                // 1. Grow previous corpus for 1 year (12 months)
+                if (rentVsEmiCorpus > 0) {
+                    rentVsEmiCorpus *= (1 + monthlySipInterestRate).pow(12)
+                }
+
+                // 2. Add new investments if possible (only when Rent > EMI)
+                if (monthlyExcessRent > 0) {
+                     // Future Value of monthly SIP for 12 months
+                    val fvFactor = (1 + monthlySipInterestRate).pow(12) - 1
+                    val sipValueForYear = (monthlyExcessRent * fvFactor * (1 + monthlySipInterestRate)) / monthlySipInterestRate
+                    rentVsEmiCorpus += sipValueForYear
+                }
+
+                rentVsEmiBreakdownList.add(
+                    com.bagadesh.domain.entities.RentVsEmiBreakdown(
+                        year = year,
+                        monthlyExcessRent = monthlyExcessRent,
+                        projectedValue = rentVsEmiCorpus
+                    )
+                )
+            }
+
             Data.Success(
                 com.bagadesh.domain.entities.HomeLoanEMIResultData(
                     emi = String.format("%.0f", emi),
@@ -245,7 +317,10 @@ class CompoundRepositoryImpl @Inject constructor() : CompoundRepository {
                     inflationAdjustedEMI = String.format("%.0f", inflationAdjustedEMI),
                     yearlyRentBreakdown = rentBreakdownList,
                     yearlyInflationBreakdown = inflationBreakdownList,
-                    yearlySipBreakdown = sipBreakdownList
+                    yearlySipBreakdown = sipBreakdownList,
+                    yearlyHomePriceBreakdown = homePriceBreakdownList,
+                    yearlyDownPaymentBreakdown = downPaymentBreakdownList,
+                    yearlyRentVsEmiBreakdown = rentVsEmiBreakdownList
                 )
             )
         } catch (exception: Exception) {

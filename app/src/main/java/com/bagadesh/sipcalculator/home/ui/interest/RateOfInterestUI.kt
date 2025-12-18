@@ -83,5 +83,5 @@ fun RateOfInterestUI(
             keyboardType = KeyboardType.Decimal
         ),
         singleLine = true
-    )
-}
+            )
+        }
