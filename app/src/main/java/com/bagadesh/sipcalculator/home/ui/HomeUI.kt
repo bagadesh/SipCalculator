@@ -31,6 +31,7 @@ import com.bagadesh.sipcalculator.home.ui.investment.InvestmentTypeUI
 import com.bagadesh.sipcalculator.home.ui.oneTime.OneTimeUI
 import com.bagadesh.sipcalculator.home.ui.sip.SipUI
 import com.bagadesh.sipcalculator.home.ui.sipThenOneTime.SipThenOneTimeUI
+import com.bagadesh.sipcalculator.home.ui.oneTimeThenSip.OneTimeThenSipUI
 import com.bagadesh.sipcalculator.home.viewmodel.HomeViewModel
 import com.bagadesh.sipcalculator.ui.theme.buttonTextColor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -107,6 +108,7 @@ fun  ContentBasedOnInvestmentType(
         InvestmentType.ONE_TIME -> OneTimeUI(onSaveClick = onSaveClick)
         InvestmentType.SIP -> SipUI(onSaveClick = onSaveClick)
         InvestmentType.SIP_THEN_ONE_TIME -> SipThenOneTimeUI(onSaveClick = onSaveClick)
+        InvestmentType.ONE_TIME_THEN_SIP -> OneTimeThenSipUI(onSaveClick = onSaveClick)
         InvestmentType.CAGR -> CAGRUI()
         InvestmentType.FIRE -> FireUI()
         InvestmentType.INFLATION -> InflationUI()
